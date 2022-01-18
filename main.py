@@ -35,7 +35,8 @@ def main():
     config = {}
     results = []
     try:
-        with open("conf/config.json", "r", encoding="utf-8") as json_file:
+        # with open("conf/config.json", "r", encoding="utf-8") as json_file:
+        with open("conf/test.json", "r", encoding="utf-8") as json_file:
             config = json.load(json_file)
     except Exception as e:
         logger.exception(e)   
@@ -60,15 +61,15 @@ def main():
 
 def search_targets(target_zipfile, target_strings):
     result = []
-    target_zip = zipfile.ZipFile(target_zipfile)
-    for filename in target_zip.namelist():
-        content = target_zip.read(filename).decode("utf-8")
-        for target in target_strings:
-            # logger.debug(f"target: {target}")
-            lines = re.findall(rf"{target}", content)
-            for line in lines:
-                logger.debug("Found!")
-                result.append(f"{target_zipfile}\\{filename}: {line}")
+    with zipfile.ZipFile(target_zipfile) as zip_file:
+        for filename in zip_file.namelist():
+            with zip_file.open(filename, 'r') as target_file:
+                for i, line in enumerate(target_file):
+                    logger.debug(line)
+                    for target in target_strings:
+                        found = re.findall(rf"{target}", line.decode('utf-8'))
+                        if found != []:
+                            result.append(f"{target_zipfile}\\{filename}(at line {i + 1}): {found}\n")
     return result
 
 if __name__ == '__main__':

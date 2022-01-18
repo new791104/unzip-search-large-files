@@ -1,5 +1,5 @@
 {  
     "target_folder": ".",
     "target_filenames": ["test(.*).zip"],
-    "target_strings": [".*charlie.*", ".*jndi:.*", ".*ldap:.*"]
+    "target_strings": [".*charlie.*"]
 }
